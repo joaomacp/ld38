@@ -42,8 +42,6 @@ function create() {
 
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
-  game.camera.lerp = 0.5;
-
 }
 
 function update() {
