@@ -46,7 +46,7 @@ function create() {
 
   fullMeter.fixedToCamera = true;
 
-  cropRect = new Phaser.Rectangle(0, 0, 50, 500);
+  cropRect = new Phaser.Rectangle(50, 50, 50, 700);
 
   fullMeter.crop(cropRect);
 
