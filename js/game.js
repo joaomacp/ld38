@@ -46,8 +46,8 @@ function update() {
 
   if(game.input.activePointer.leftButton.isDown){
     var force = 2;
-    var forceX = force * Math.cos(force);
-    var forceY = force * Math.sin(force);
+    var forceX = force * Math.cos(sprite.body.rotation + 1.57);
+    var forceY = force * Math.sin(sprite.body.rotation + 1.57);
     sprite.body.applyImpulse([forceX, forceY]);
   }
 }

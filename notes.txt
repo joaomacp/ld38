@@ -6,3 +6,9 @@ Idea
 - Realizes his fuel is limited, and that big planets are firey and icey and bad
 - Game mechanic: avoiding big planets with a small amount of fuel in the jetpack
 - Eventually comes back to his planet, and doesn't want to leave it anymore
+
+
+TODO:
+
+- Add friction
+- Body disappears when goes out of canvas and doesn't come back
