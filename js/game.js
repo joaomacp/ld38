@@ -12,6 +12,8 @@ function preload() {
 var sprite;
 var cursors;
 
+var planet1Center = [];
+
 function create() {
 
   game.world.setBounds(0, 0, 2600, 2200);
@@ -63,7 +65,11 @@ function update() {
   }
   pointToMouse();
 
-limitSpeedP2JS(sprite.body, 400);
+  if(gravityOn){
+    applyPlanetGravity();
+  }
+
+  limitSpeedP2JS(sprite.body, 400);
 
 }
 
@@ -88,6 +94,10 @@ function pointToMouse(){
   console.log(theta);
 
   console.log('pointing to mouse: theta = '+ theta + " rotation: " + sprite.body.rotation + "fixed rotation: " + sprite.body.fixedRotation + "mouseX = " + game.input.mousePointer.x + "mouseY = " + game.input.mousePointer.y )
+}
+
+function applyPlanetGravity(){
+
 }
 
 var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x;    var y = p2Body.velocity.y;    if (Math.pow(x, 2) + Math.pow(y, 2) > Math.pow(maxSpeed, 2)) {        var a = Math.atan2(y, x);        x = Math.cos(a) * maxSpeed;        y = Math.sin(a) * maxSpeed;        p2Body.velocity.x = x;        p2Body.velocity.y = y;    } }
