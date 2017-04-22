@@ -105,7 +105,7 @@ function update() {
   //meterMask.y = 700 + game.camera.y;
 
   //fullMeter.mask = meterMask;
-
+if(sprite.body){
   if(game.input.activePointer.leftButton.isDown && fuelLevel > 0){
     if(!gravityOn){
       gravityOn = true;
@@ -130,7 +130,7 @@ function update() {
   else{
     sprite.loadTexture('man');
   }
-  if(sprite.body){
+
     pointToMouse();
 
 
@@ -205,22 +205,20 @@ var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x; 
 
 function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
   //console.log('body:' + JSON.stringify(body) + ' bodyB: ' + JSON.stringify(bodyB));
+  console.log('bodyname: ' + body.name + 'body b name: ' + bodyB.name);
   if(bodyB.name == 'Planet' || body.name == 'Planet'){
-    if(!isRepositioning){
     console.log("hit a planet");
 
     // pause the camera
 
     game.camera.target = null;
 
-    isRepositioning = true;
+    sprite.body = undefined;
 
     //wait 1s, reposition player
     setTimeout(function(){
       resetPlayerAndCamera();
-      isRepositioning = false;
     }, 1000);
-  }
 
   }
 }
@@ -241,9 +239,12 @@ function resetPlayerAndCamera(){
 
   sprite = game.add.sprite(200, 200, 'man');
   game.physics.p2.enable(sprite);
+  sprite.body.onBeginContact.add(collisionHandle, this);
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
   addPlanetBodies();
+
+  console.log('reset');
 
 
 }
@@ -261,6 +262,7 @@ function addPlanetBodies(){
     planet.body.body.name = 'Planet';
 
   }
+  console.log("added");
 }
 
 function addRockBodies(){
