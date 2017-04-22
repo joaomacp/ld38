@@ -42,19 +42,29 @@ function create() {
   //  Add a sprite
   sprite = game.add.sprite(200, 200, 'man');
 
-  emptyMeter = game.add.sprite(50, 700, 'meter_empty');
-
-  emptyMeter.fixedToCamera = true;
 
   fullMeter = game.add.sprite(50, 700, 'meter_full');
 
   fullMeter.fixedToCamera = true;
+
+  emptyMeter = game.add.sprite(50, 700, 'meter_empty');
+
+  emptyMeter.fixedToCamera = true;
 
   meterMask = game.add.graphics(50, 700);
 
   //	Shapes drawn to the Graphics object must be filled.
   meterMask.beginFill(0xffffff);
 
+  meterMask.x = 50;
+
+  meterMask.y = 700;
+
+  meterMask.fixedToCamera = true;
+
+meterMask.drawRect(0 + game.camera.x, 0 + game.camera.y, 100, 100);
+
+  emptyMeter.mask = meterMask;
 
 
 
@@ -82,10 +92,10 @@ function create() {
 function update() {
 
   //sprite.body.setZeroVelocity();
+  //meterMask.x = 50 + game.camera.x;
+  //meterMask.y = 700 + game.camera.y;
 
-  meterMask.drawRect(0 + game.camera.x, 100-fuelLevel + game.camera.y, 100, 100);
-  console.log('fuelLevel: ' + fuelLevel);
-  fullMeter.mask = meterMask;
+  //fullMeter.mask = meterMask;
 
   if(game.input.activePointer.leftButton.isDown && fuelLevel > 0){
     if(!gravityOn){
@@ -99,6 +109,10 @@ function update() {
 
     if(timeToSpendFuel){
       fuelLevel--;
+
+      //fullMeter.mask = meterMask;
+      meterMask.height = 100-fuelLevel;
+      console.log('fuelLevel: ' + fuelLevel);
       timeToSpendFuel = false;
       setTimeout(function(){timeToSpendFuel = true;}, 1000/fuelConsumption);
     }
