@@ -7,10 +7,13 @@ function preload() {
   game.load.image('man', 'assets/man.png');
   game.load.image('map', 'assets/map.png');
   game.load.image('man_jet', 'assets/man_withjet.png');
+  game.load.image('meter_empty', 'assets/meter.png');
+  game.load.image('meter_full', 'assets/meter_full.png');
 
 }
 
 var sprite;
+var emptyMeter;
 var cursors;
 
 var planets = [
@@ -34,7 +37,9 @@ function create() {
   //  Add a sprite
   sprite = game.add.sprite(200, 200, 'man');
 
+  emptyMeter = game.add.sprite(50, 700, 'meter_empty');
 
+  emptyMeter.fixedToCamera = true;
 
   //  Enable if for physics. This creates a default rectangular body.
   game.physics.p2.enable(sprite);
@@ -93,6 +98,8 @@ function render() {
   if(sprite.body){
     sprite.rotation = sprite.body.rotation;
   }
+
+
 }
 
 function pointToMouse(){
@@ -165,6 +172,10 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 function resetPlayerAndCamera(){
 
   sprite.kill();
+
+  for(planet of planets){
+    planet.body.kill();
+  }
 
   game.physics.startSystem(Phaser.Physics.P2JS);
 
