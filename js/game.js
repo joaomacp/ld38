@@ -58,7 +58,7 @@ function update() {
     if(!gravityOn){
       gravityOn = true;
     }
-    var force = 0.8;
+    var force = 0.5;
     var forceX = force * Math.cos(sprite.body.rotation + 1.57);
     var forceY = force * Math.sin(sprite.body.rotation + 1.57);
     sprite.body.applyImpulse([forceX, forceY]);
@@ -69,7 +69,7 @@ function update() {
     applyPlanetGravity();
   }
 
-  limitSpeedP2JS(sprite.body, 400);
+  limitSpeedP2JS(sprite.body, 200);
 
 }
 
@@ -91,24 +91,25 @@ function pointToMouse(){
   sprite.body.fixedRotation = false;
   sprite.body.rotation = theta;
   sprite.body.fixedRotation = true;
-  console.log(theta);
+  //console.log(theta);
 
-  console.log('pointing to mouse: theta = '+ theta + " rotation: " + sprite.body.rotation + "fixed rotation: " + sprite.body.fixedRotation + "mouseX = " + game.input.mousePointer.x + "mouseY = " + game.input.mousePointer.y )
+  //console.log('pointing to mouse: theta = '+ theta + " rotation: " + sprite.body.rotation + "fixed rotation: " + sprite.body.fixedRotation + "mouseX = " + game.input.mousePointer.x + "mouseY = " + game.input.mousePointer.y )
 }
 
 function applyPlanetGravity(){
   var distanceToP1 = Phaser.Point.distance(sprite.body, planet1Center);
-  if(distanceToP1 < 350){
+  console.log('distance to P1: ' + distanceToP1);
+  if(distanceToP1 < 700){
     var toX = planet1Center.x;
 
     var toY = planet1Center.y;
 
     var dy = sprite.body.y - toY ;
     var dx = sprite.body.x - toX;
-    var angleToP1 = Math.atan2(dy, dx) - 1.57;
+    var angleToP1 = Math.atan2(dy, dx);
 
     //var force = 1000 / Math.pow(distanceToP1, 2);
-    var force = 1000 / distanceToP1;
+    var force = 3000 / distanceToP1;
     var forceX = force * Math.cos(angleToP1);
     var forceY = force * Math.sin(angleToP1);
     sprite.body.applyForce([forceX, forceY]);
