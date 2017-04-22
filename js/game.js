@@ -16,6 +16,10 @@ var sprite;
 var emptyMeter;
 var fullMeter;
 var cursors;
+var meterMask;
+var fuelLevel = 100;
+var timeToSpendFuel = true;
+var fuelConsumption = 2;
 
 var planets = [
   {center: {x: 600, y: 273}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
@@ -46,9 +50,13 @@ function create() {
 
   fullMeter.fixedToCamera = true;
 
-  cropRect = new Phaser.Rectangle(50, 50, 50, 700);
+  meterMask = game.add.graphics(50, 700);
 
-  fullMeter.crop(cropRect);
+  //	Shapes drawn to the Graphics object must be filled.
+  meterMask.beginFill(0xffffff);
+
+
+
 
   //  Enable if for physics. This creates a default rectangular body.
   game.physics.p2.enable(sprite);
@@ -75,9 +83,11 @@ function update() {
 
   //sprite.body.setZeroVelocity();
 
+  meterMask.drawRect(0 + game.camera.x, 100-fuelLevel + game.camera.y, 100, 100);
+  console.log('fuelLevel: ' + fuelLevel);
+  fullMeter.mask = meterMask;
 
-
-  if(game.input.activePointer.leftButton.isDown){
+  if(game.input.activePointer.leftButton.isDown && fuelLevel > 0){
     if(!gravityOn){
       gravityOn = true;
     }
@@ -86,6 +96,13 @@ function update() {
     var forceY = force * Math.sin(sprite.body.rotation + 1.57);
     sprite.body.applyImpulse([forceX, forceY]);
     sprite.loadTexture('man_jet');
+
+    if(timeToSpendFuel){
+      fuelLevel--;
+      timeToSpendFuel = false;
+      setTimeout(function(){timeToSpendFuel = true;}, 1000/fuelConsumption);
+    }
+
   }
   else{
     sprite.loadTexture('man');
