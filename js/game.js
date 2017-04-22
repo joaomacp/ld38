@@ -38,26 +38,13 @@ function create() {
 
 function update() {
 
-  sprite.body.setZeroVelocity();
+  //sprite.body.setZeroVelocity();
 
-  if (cursors.left.isDown)
-  {
-    sprite.body.moveLeft(400);
-  }
-  else if (cursors.right.isDown)
-  {
-    sprite.body.moveRight(400);
-  }
 
-  if (cursors.up.isDown)
-  {
-    sprite.body.moveUp(400);
-  }
-  else if (cursors.down.isDown)
-  {
-    sprite.body.moveDown(400);
-  }
 
+  sprite.body.x = game.input.mousePointer.x;
+
+  sprite.body.y = game.input.mousePointer.y;
 }
 
 function render() {
