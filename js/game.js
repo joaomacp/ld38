@@ -32,7 +32,9 @@ function create() {
 
   //text = game.add.text(20, 20, 'move with arrow keys', { fill: '#ffffff' });
 
-  cursors = game.input.keyboard.createCursorKeys();
+  //cursors = game.input.keyboard.createCursorKeys();
+
+  game.input.mouse.capture = true;
 
 }
 
@@ -41,6 +43,13 @@ function update() {
   //sprite.body.setZeroVelocity();
 
   pointToMouse();
+
+  if(game.input.activePointer.leftButton.isDown){
+    var force = 2;
+    var forceX = force * Math.cos(force);
+    var forceY = force * Math.sin(force);
+    sprite.body.applyImpulse([forceX, forceY]);
+  }
 }
 
 function render() {
