@@ -10,5 +10,4 @@ Idea
 
 TODO:
 
-- scrollable map, camera movement
-- Add maxSpeed
+- add planet gravity
