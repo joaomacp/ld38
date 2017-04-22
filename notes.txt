@@ -1,1 +1,8 @@
 Theme: "A Small World"
+
+Idea
+
+- Guy with a jetpack wants to leave his world because it's small
+- Realizes his fuel is limited, and that big planets are firey and icey and bad
+- Game mechanic: avoiding big planets with a small amount of fuel in the jetpack
+- Eventually comes back to his planet, and doesn't want to leave it anymore
