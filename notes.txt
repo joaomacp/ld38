@@ -16,3 +16,7 @@ TODO:
 - add another 'goal rock'
 - improve scaling and physics
 - improve graphics
+
+Eventually:
+- fix rocks angle problem
+- add animation for fuel reload on rocks
