@@ -97,7 +97,22 @@ function pointToMouse(){
 }
 
 function applyPlanetGravity(){
-  console.log('distance to planet1: ' + Phaser.Point.distance(sprite.body, planet1Center))
+  var distanceToP1 = Phaser.Point.distance(sprite.body, planet1Center);
+  if(distanceToP1 < 350){
+    var toX = planet1Center.x;
+
+    var toY = planet1Center.y;
+
+    var dy = sprite.body.y - toY ;
+    var dx = sprite.body.x - toX;
+    var angleToP1 = Math.atan2(dy, dx) - 1.57;
+
+    //var force = 1000 / Math.pow(distanceToP1, 2);
+    var force = 1000 / distanceToP1;
+    var forceX = force * Math.cos(angleToP1);
+    var forceY = force * Math.sin(angleToP1);
+    sprite.body.applyForce([forceX, forceY]);
+  }
 }
 
 var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x;    var y = p2Body.velocity.y;    if (Math.pow(x, 2) + Math.pow(y, 2) > Math.pow(maxSpeed, 2)) {        var a = Math.atan2(y, x);        x = Math.cos(a) * maxSpeed;        y = Math.sin(a) * maxSpeed;        p2Body.velocity.x = x;        p2Body.velocity.y = y;    } }
