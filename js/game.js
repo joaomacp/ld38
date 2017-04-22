@@ -40,7 +40,9 @@ function create() {
 
   game.input.mouse.capture = true;
 
-  game.camera.follow(sprite);
+  game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+  game.camera.lerp = 0.5;
 
 }
 
