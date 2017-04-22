@@ -12,7 +12,7 @@ function preload() {
 var sprite;
 var cursors;
 
-var planet1Center = [];
+var planet1Center = {x: 600, y: 273};
 
 function create() {
 
@@ -97,7 +97,7 @@ function pointToMouse(){
 }
 
 function applyPlanetGravity(){
-
+  console.log('distance to planet1: ' + Phaser.Point.distance(sprite.body, planet1Center))
 }
 
 var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x;    var y = p2Body.velocity.y;    if (Math.pow(x, 2) + Math.pow(y, 2) > Math.pow(maxSpeed, 2)) {        var a = Math.atan2(y, x);        x = Math.cos(a) * maxSpeed;        y = Math.sin(a) * maxSpeed;        p2Body.velocity.x = x;        p2Body.velocity.y = y;    } }
