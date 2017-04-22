@@ -14,6 +14,7 @@ function preload() {
 
 var sprite;
 var emptyMeter;
+var fullMeter;
 var cursors;
 
 var planets = [
@@ -40,6 +41,14 @@ function create() {
   emptyMeter = game.add.sprite(50, 700, 'meter_empty');
 
   emptyMeter.fixedToCamera = true;
+
+  fullMeter = game.add.sprite(50, 700, 'meter_full');
+
+  fullMeter.fixedToCamera = true;
+
+  cropRect = new Phaser.Rectangle(0, 0, 50, 500);
+
+  fullMeter.crop(cropRect);
 
   //  Enable if for physics. This creates a default rectangular body.
   game.physics.p2.enable(sprite);
