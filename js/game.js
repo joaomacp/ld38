@@ -2,6 +2,8 @@ var game = new Phaser.Game(1000, 850, Phaser.CANVAS, 'game', { preload: preload,
 
 var gravityOn = false;
 
+var LOG_MOUSEPOS = false;
+
 function preload() {
 
   game.load.image('man', 'assets/man.png');
@@ -20,12 +22,17 @@ var meterMask;
 var fuelLevel = 100;
 var timeToSpendFuel = true;
 var fuelConsumption = 2;
+var isRepositioning = false;
 
 var planets = [
   {center: {x: 600, y: 273}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
   {center: {x: 1000, y: 500}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined}
 ]
 
+var rocks = [
+  {center: {x: 236, y: 202}, radius: 23, name: '1', fuelUsed: true, body: undefined},
+  {center: {x: 1200, y: 259}, radius: 22, name: '2', fuelUsed: false, body: undefined}
+]
 
 function create() {
 
@@ -62,7 +69,7 @@ function create() {
 
   meterMask.fixedToCamera = true;
 
-meterMask.drawRect(0 + game.camera.x, 0 + game.camera.y, 100, 100);
+  meterMask.drawRect(0 + game.camera.x, 0 + game.camera.y, 100, 100);
 
   emptyMeter.mask = meterMask;
 
@@ -86,6 +93,8 @@ meterMask.drawRect(0 + game.camera.x, 0 + game.camera.y, 100, 100);
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
   addPlanetBodies();
+
+  //addRockBodies();
 
 }
 
@@ -158,7 +167,9 @@ function pointToMouse(){
   sprite.body.fixedRotation = true;
   //console.log(theta);
 
-  //console.log('mouseX: ' + toX + ', mouseY: ' + toY);
+  if(LOG_MOUSEPOS){
+    console.log('mouseX: ' + toX + ', mouseY: ' + toY);
+  }
 
   //console.log('pointing to mouse: theta = '+ theta + " rotation: " + sprite.body.rotation + "fixed rotation: " + sprite.body.fixedRotation + "mouseX = " + game.input.mousePointer.x + "mouseY = " + game.input.mousePointer.y )
 }
@@ -195,19 +206,25 @@ var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x; 
 function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
   //console.log('body:' + JSON.stringify(body) + ' bodyB: ' + JSON.stringify(bodyB));
   if(bodyB.name == 'Planet' || body.name == 'Planet'){
+    if(!isRepositioning){
     console.log("hit a planet");
 
     // pause the camera
 
     game.camera.target = null;
 
+    isRepositioning = true;
+
     //wait 1s, reposition player
     setTimeout(function(){
       resetPlayerAndCamera();
+      isRepositioning = false;
     }, 1000);
+  }
 
   }
 }
+
 
 function resetPlayerAndCamera(){
 
@@ -228,7 +245,9 @@ function resetPlayerAndCamera(){
 
   addPlanetBodies();
 
+
 }
+
 
 function addPlanetBodies(){
 
@@ -237,10 +256,24 @@ function addPlanetBodies(){
     planet.body = game.add.sprite(planet.center.x, planet.center.y, 'man');
     planet.body.alpha = 0;
     game.physics.p2.enable(planet.body);
-    sprite.body.onBeginContact.add(collisionHandle, this);
     planet.body.body.setCircle(planet.radius);
     planet.body.body.static = true;
     planet.body.body.name = 'Planet';
 
   }
+}
+
+function addRockBodies(){
+
+  for(rock of rocks){
+
+    rock.body = game.add.sprite(rock.center.x, rock.center.y, 'man');
+    rock.body.alpha = 0;
+    game.physics.p2.enable(rock.body);
+    rock.body.body.setCircle(rock.radius);
+    rock.body.body.static = true;
+    rock.body.body.name = 'Rock';
+
+  }
+
 }
