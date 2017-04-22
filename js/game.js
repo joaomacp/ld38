@@ -45,16 +45,18 @@ function create() {
 
   game.add.image(0, 0, 'map');
 
+  // New initialization code
+  setPlayerOnRock(0);
+
+/* do these when setting / launching the player
   //	Enable p2 physics
   game.physics.startSystem(Phaser.Physics.P2JS);
 
-  //  Make things a bit more bouncey
-  game.physics.p2.defaultRestitution = 0.8;
-
   //  Add a sprite
-  sprite = game.add.sprite(100, 100, 'man');
+  sprite = game.add.sprite(200, 200, 'man');
 
-
+*/
+  // Forget about if the meter works for now
   fullMeter = game.add.sprite(50, 700, 'meter_full');
 
   fullMeter.fixedToCamera = true;
@@ -68,26 +70,20 @@ function create() {
   //	Shapes drawn to the Graphics object must be filled.
   meterMask.beginFill(0xffffff);
 
-  meterMask.x = 50;
-
-  meterMask.y = 700;
-
   meterMask.fixedToCamera = true;
 
-  meterMask.drawRect(0 + game.camera.x, 0 + game.camera.y, 100, 100);
+  meterMask.drawRect(0, 0, 100, 100);
 
   emptyMeter.mask = meterMask;
 
-
-
   //  Enable if for physics. This creates a default rectangular body.
-  game.physics.p2.enable(sprite);
+  //game.physics.p2.enable(sprite);
 
-  sprite.body.onBeginContact.add(collisionHandle, this);
+  //sprite.body.onBeginContact.add(collisionHandle, this);
 
   //  Modify a few body properties
   //sprite.body.setZeroDamping();
-  sprite.body.fixedRotation = true;
+  //sprite.body.fixedRotation = true;
 
   //text = game.add.text(20, 20, 'move with arrow keys', { fill: '#ffffff' });
 
@@ -95,12 +91,19 @@ function create() {
 
   game.input.mouse.capture = true;
 
-  game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+  //game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
   addPlanetBodies();
 
   addRockBodies();
 
+  //enterRockMode(200, 200, rocks[0]);
+
+}
+
+function setPlayerOnRock(nRock){
+  var rockObject = 
+  var initialPos = {x: rocks[nRock]}
 }
 
 function update() {
@@ -221,13 +224,13 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
     // pause the camera
 
-    game.camera.target = null;
+    //game.camera.target = null;
 
-    //sprite.body = undefined;
+    //sprite.kill();
 
     //wait 1s, reposition player
     setTimeout(function(){
-      resetPlayerAndCamera();
+      enterRockMode(200, 200, rocks[0]);
     }, 1000);
 
   }
@@ -258,7 +261,6 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 }
 
 function enterRockMode(x, y, rockLanded){
-
   canTakeOff = false;
 
   setTimeout(function(){canTakeOff = true;}, 220);
@@ -314,12 +316,26 @@ var rockModeUpdate = function(){
   }
 
   if(game.input.activePointer.leftButton.isDown && fuelLevel > 0 && canTakeOff){
+
+    canTakeOff = false;
+
+    setTimeout(function() {canTakeOff = true;}, 2000);
+
     if(!gravityOn){
       gravityOn = true;
       console.log("gravity is now on");
     }
 
     var sRotation = sprite.rotation;
+
+    var sPosX = sprite.x;
+    var sPosY = sprite.y;
+
+    console.log('adding at ' + sPosX + ', ' + sPosY);
+
+    sprite.kill();
+
+    sprite = game.add.sprite(sPosX, sPosY, 'man');
 
     game.physics.p2.enable(sprite);
 
@@ -340,7 +356,7 @@ var rockModeUpdate = function(){
       sprite.body.onBeginContact.add(collisionHandle, this);
     }
       addRockBodies();
-    }, 150);
+    }, 1500);
 
 
 

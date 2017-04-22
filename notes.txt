@@ -18,5 +18,6 @@ TODO:
 - improve graphics
 
 Eventually:
-- fix rocks angle problem
+- fix rocks angle problem, and getting stuck in rocks
 - add animation for fuel reload on rocks
+- add a text with the fuelLevel number
