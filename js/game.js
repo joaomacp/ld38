@@ -2,6 +2,8 @@ var game = new Phaser.Game(1000, 850, Phaser.CANVAS, 'game', { preload: preload,
 
 var gravityOn = false;
 
+var canTakeOff = true;
+
 var LOG_MOUSEPOS = false;
 
 function preload() {
@@ -221,7 +223,7 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
     game.camera.target = null;
 
-    sprite.body = undefined;
+    //sprite.body = undefined;
 
     //wait 1s, reposition player
     setTimeout(function(){
@@ -257,6 +259,16 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
 function enterRockMode(x, y, rockLanded){
 
+  canTakeOff = false;
+
+  setTimeout(function(){canTakeOff = true;}, 220);
+
+  if(!rockLanded.fuelUsed){
+    rockLanded.fuelUsed = true;
+    fuelLevel = 100;
+    meterMask.height = 0;
+  }
+
   gravityOn = false;
   console.log("gravity is now off");
 
@@ -280,40 +292,72 @@ function enterRockMode(x, y, rockLanded){
 
 var rockModeUpdate = function(){
 
-var distanceToMouse = Phaser.Point.distance({x: game.input.mousePointer.x + game.camera.x, y: game.input.mousePointer.y + game.camera.y}, playerOnRock.center);
+  var distanceToMouse = Phaser.Point.distance({x: game.input.mousePointer.x + game.camera.x, y: game.input.mousePointer.y + game.camera.y}, playerOnRock.center);
 
-if(distanceToMouse > playerOnRock.radius + 70){
-  var toX = game.input.mousePointer.x + game.camera.x;
+  if(distanceToMouse > playerOnRock.radius + 70){
+    var toX = game.input.mousePointer.x + game.camera.x;
 
-  var toY = game.input.mousePointer.y + game.camera.y;
+    var toY = game.input.mousePointer.y + game.camera.y;
 
-  var dy = sprite.y - toY ;
-  var dx = sprite.x - toX;
-  var theta = Math.atan2(dy, dx) - 1.57;
-  theta  = theta * 180/3.142;
-  sprite.angle = theta;
+    var dy = sprite.y - toY ;
+    var dx = sprite.x - toX;
+    var theta = Math.atan2(dy, dx) - 1.57;
+    theta  = theta * 180/3.142;
+    sprite.angle = theta;
 
-  var radius = playerOnRock.radius + 15;
-  var distX = radius * Math.cos(sprite.rotation - 1.57);
-  var distY = radius * Math.sin(sprite.rotation - 1.57);
-  sprite.x = playerOnRock.center.x + distX;
-  sprite.y = playerOnRock.center.y + distY;
-  //console.log(theta);
-}
+    var radius = playerOnRock.radius + 15;
+    var distX = radius * Math.cos(sprite.rotation - 1.57);
+    var distY = radius * Math.sin(sprite.rotation - 1.57);
+    sprite.x = playerOnRock.center.x + distX;
+    sprite.y = playerOnRock.center.y + distY;
+    //console.log(theta);
+  }
+
+  if(game.input.activePointer.leftButton.isDown && fuelLevel > 0 && canTakeOff){
+    if(!gravityOn){
+      gravityOn = true;
+      console.log("gravity is now on");
+    }
+
+    var sRotation = sprite.rotation;
+
+    game.physics.p2.enable(sprite);
+
+    sprite.body.fixedRotation = false;
+
+    sprite.body.rotation = sRotation;
+
+    sprite.body.fixedRotation = true;
+
+    var force = 0.5;
+    var forceX = force * Math.cos(sprite.body.rotation + 1.57);
+    var forceY = force * Math.sin(sprite.body.rotation + 1.57);
+    sprite.body.applyImpulse([forceX, forceY]);
+
+    setTimeout(function(){
+      game.state.update = update;
+      if(sprite.body){
+      sprite.body.onBeginContact.add(collisionHandle, this);
+    }
+      addRockBodies();
+    }, 150);
 
 
+
+  }
 
 }
 
 
 function resetPlayerAndCamera(){
 
-  sprite.kill();
+  //sprite.kill();
 
   for(planet of planets){
     planet.body.kill();
   }
 
+/*
   game.physics.startSystem(Phaser.Physics.P2JS);
 
   //  Make things a bit more bouncey
@@ -324,7 +368,11 @@ function resetPlayerAndCamera(){
   sprite.body.onBeginContact.add(collisionHandle, this);
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
+
+*/
   addPlanetBodies();
+
+  enterRockMode(200,200, rocks[0]);
 
   console.log('reset');
 
