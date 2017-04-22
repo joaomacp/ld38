@@ -12,8 +12,11 @@ function preload() {
 var sprite;
 var cursors;
 
-var planet1Center = {x: 600, y: 273};
-var planet2Center = {x: 1000, y: 500};
+var planets = [
+  {center: {x: 600, y: 273}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
+  {center: {x: 1000, y: 500}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined}
+]
+
 
 function create() {
 
@@ -32,8 +35,12 @@ function create() {
   //  Add a sprite
   sprite = game.add.sprite(200, 200, 'man');
 
+
+
   //  Enable if for physics. This creates a default rectangular body.
   game.physics.p2.enable(sprite);
+
+  sprite.body.onBeginContact.add(collisionHandle, this);
 
   //  Modify a few body properties
   //sprite.body.setZeroDamping();
@@ -46,6 +53,16 @@ function create() {
   game.input.mouse.capture = true;
 
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+  for(planet of planets){
+
+    planet.body = game.add.sprite(planet.center.x, planet.center.y, 'man');
+    game.physics.p2.enable(planet.body);
+    planet.body.body.setCircle(planet.radius);
+    planet.body.body.static = true;
+    planet.body.body.name = 'Planet';
+
+  }
 
 }
 
@@ -94,40 +111,21 @@ function pointToMouse(){
   sprite.body.fixedRotation = true;
   //console.log(theta);
 
-console.log('mouseX: ' + toX + ', mouseY: ' + toY);
+  //console.log('mouseX: ' + toX + ', mouseY: ' + toY);
 
   //console.log('pointing to mouse: theta = '+ theta + " rotation: " + sprite.body.rotation + "fixed rotation: " + sprite.body.fixedRotation + "mouseX = " + game.input.mousePointer.x + "mouseY = " + game.input.mousePointer.y )
 }
 
 function applyPlanetGravity(){
 
-  addPlanet(planet1Center, 3000, 400, 'P1');
-
-  addPlanet(planet2Center, 3500, 450, 'P2');
-  /*
-  var distanceToP1 = Phaser.Point.distance(sprite.body, planet1Center);
-  console.log('distance to P1: ' + distanceToP1);
-  if(distanceToP1 < 400){
-    var toX = planet1Center.x;
-
-    var toY = planet1Center.y;
-
-    var dy = sprite.body.y - toY ;
-    var dx = sprite.body.x - toX;
-    var angleToP1 = Math.atan2(dy, dx);
-
-    //var force = 1000 / Math.pow(distanceToP1, 2);
-    var force = 3000 / distanceToP1;
-    var forceX = force * Math.cos(angleToP1);
-    var forceY = force * Math.sin(angleToP1);
-    sprite.body.applyForce([forceX, forceY]);
+  for(planet of planets){
+    addPlanet(planet.center, planet.gravity, planet.gravityDistance, planet.name);
   }
-  */
 }
 
 function addPlanet(center, gravity, distanceLimit, name){
   var distanceToPlanet = Phaser.Point.distance(sprite.body, center);
-  console.log('distance to ' + name + ': ' + distanceToPlanet);
+  //console.log('distance to ' + name + ': ' + distanceToPlanet);
   if(distanceToPlanet < distanceLimit){
     var toX = center.x;
 
@@ -146,3 +144,9 @@ function addPlanet(center, gravity, distanceLimit, name){
 }
 
 var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x;    var y = p2Body.velocity.y;    if (Math.pow(x, 2) + Math.pow(y, 2) > Math.pow(maxSpeed, 2)) {        var a = Math.atan2(y, x);        x = Math.cos(a) * maxSpeed;        y = Math.sin(a) * maxSpeed;        p2Body.velocity.x = x;        p2Body.velocity.y = y;    } }
+
+function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
+  if(bodyB.name == 'planet'){
+    console.log("hit a planet");
+  }
+}
