@@ -40,12 +40,24 @@ function update() {
 
   //sprite.body.setZeroVelocity();
 
-
-
-  sprite.body.x = game.input.mousePointer.x;
-
-  sprite.body.y = game.input.mousePointer.y;
+  pointToMouse();
 }
 
 function render() {
+}
+
+function pointToMouse(){
+  var toX = game.input.mousePointer.x;
+
+  var toY = game.input.mousePointer.y;
+
+  var dy = sprite.body.y - toY ;
+  var dx = sprite.body.x - toX;
+  var theta = Math.atan2(dy, dx) - 1.57;
+  //theta  = theta * 180/3.142;
+
+
+  sprite.body.fixedRotation = false;
+  sprite.body.rotation = theta;
+  console.log(theta);
 }
