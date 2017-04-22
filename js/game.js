@@ -6,6 +6,7 @@ function preload() {
 
   game.load.image('man', 'assets/man.png');
   game.load.image('map', 'assets/map.png');
+  game.load.image('man_jet', 'assets/man_withjet.png');
 
 }
 
@@ -21,8 +22,6 @@ var planets = [
 function create() {
 
   game.world.setBounds(0, 0, 2600, 2200);
-
-
 
   game.add.image(0, 0, 'map');
 
@@ -54,15 +53,7 @@ function create() {
 
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
-  for(planet of planets){
-
-    planet.body = game.add.sprite(planet.center.x, planet.center.y, 'man');
-    game.physics.p2.enable(planet.body);
-    planet.body.body.setCircle(planet.radius);
-    planet.body.body.static = true;
-    planet.body.body.name = 'Planet';
-
-  }
+  addPlanetBodies();
 
 }
 
@@ -80,19 +71,28 @@ function update() {
     var forceX = force * Math.cos(sprite.body.rotation + 1.57);
     var forceY = force * Math.sin(sprite.body.rotation + 1.57);
     sprite.body.applyImpulse([forceX, forceY]);
+    sprite.loadTexture('man_jet');
   }
-  pointToMouse();
-
-  if(gravityOn){
-    applyPlanetGravity();
+  else{
+    sprite.loadTexture('man');
   }
+  if(sprite.body){
+    pointToMouse();
 
-  limitSpeedP2JS(sprite.body, 200);
 
+    if(gravityOn){
+      applyPlanetGravity();
+    }
+
+
+    limitSpeedP2JS(sprite.body, 200);
+  }
 }
 
 function render() {
-  sprite.rotation = sprite.body.rotation;
+  if(sprite.body){
+    sprite.rotation = sprite.body.rotation;
+  }
 }
 
 function pointToMouse(){
@@ -146,7 +146,50 @@ function addPlanet(center, gravity, distanceLimit, name){
 var limitSpeedP2JS = function(p2Body, maxSpeed) {    var x = p2Body.velocity.x;    var y = p2Body.velocity.y;    if (Math.pow(x, 2) + Math.pow(y, 2) > Math.pow(maxSpeed, 2)) {        var a = Math.atan2(y, x);        x = Math.cos(a) * maxSpeed;        y = Math.sin(a) * maxSpeed;        p2Body.velocity.x = x;        p2Body.velocity.y = y;    } }
 
 function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
-  if(bodyB.name == 'planet'){
+  //console.log('body:' + JSON.stringify(body) + ' bodyB: ' + JSON.stringify(bodyB));
+  if(bodyB.name == 'Planet' || body.name == 'Planet'){
     console.log("hit a planet");
+
+    // pause the camera
+
+    game.camera.target = null;
+
+    //wait 1s, reposition player
+    setTimeout(function(){
+      resetPlayerAndCamera();
+    }, 1000);
+
+  }
+}
+
+function resetPlayerAndCamera(){
+
+  sprite.kill();
+
+  game.physics.startSystem(Phaser.Physics.P2JS);
+
+  //  Make things a bit more bouncey
+  game.physics.p2.defaultRestitution = 0.8;
+
+  sprite = game.add.sprite(200, 200, 'man');
+  game.physics.p2.enable(sprite);
+  game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+  addPlanetBodies();
+
+}
+
+function addPlanetBodies(){
+
+  for(planet of planets){
+
+    planet.body = game.add.sprite(planet.center.x, planet.center.y, 'man');
+    planet.body.alpha = 0;
+    game.physics.p2.enable(planet.body);
+    sprite.body.onBeginContact.add(collisionHandle, this);
+    planet.body.body.setCircle(planet.radius);
+    planet.body.body.static = true;
+    planet.body.body.name = 'Planet';
+
   }
 }

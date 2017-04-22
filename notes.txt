@@ -10,7 +10,6 @@ Idea
 
 TODO:
 
-- add planet collision - takes player back to rock 1
 - add jetpack fuel limit
 - add another 'goal rock'
 - improve scaling and physics
