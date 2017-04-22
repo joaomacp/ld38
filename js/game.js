@@ -27,7 +27,7 @@ function create() {
   game.physics.p2.enable(sprite);
 
   //  Modify a few body properties
-  sprite.body.setZeroDamping();
+  //sprite.body.setZeroDamping();
   sprite.body.fixedRotation = true;
 
   //text = game.add.text(20, 20, 'move with arrow keys', { fill: '#ffffff' });
@@ -42,7 +42,7 @@ function update() {
 
   //sprite.body.setZeroVelocity();
 
-  pointToMouse();
+
 
   if(game.input.activePointer.leftButton.isDown){
     var force = 2;
@@ -50,9 +50,11 @@ function update() {
     var forceY = force * Math.sin(sprite.body.rotation + 1.57);
     sprite.body.applyImpulse([forceX, forceY]);
   }
+  pointToMouse();
 }
 
 function render() {
+  sprite.rotation = sprite.body.rotation;
 }
 
 function pointToMouse(){
@@ -68,5 +70,8 @@ function pointToMouse(){
 
   sprite.body.fixedRotation = false;
   sprite.body.rotation = theta;
+  sprite.body.fixedRotation = true;
   console.log(theta);
+
+  console.log('pointing to mouse: theta = '+ theta + " rotation: " + sprite.body.rotation + "fixed rotation: " + sprite.body.fixedRotation + "mouseX = " + game.input.mousePointer.x + "mouseY = " + game.input.mousePointer.y )
 }
