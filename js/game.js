@@ -12,6 +12,10 @@ var cursors;
 
 function create() {
 
+  game.world.setBounds(0, 0, 2600, 2200);
+
+
+
   game.add.image(0, 0, 'map');
 
   //	Enable p2 physics
@@ -36,6 +40,8 @@ function create() {
 
   game.input.mouse.capture = true;
 
+  game.camera.follow(sprite);
+
 }
 
 function update() {
@@ -58,9 +64,9 @@ function render() {
 }
 
 function pointToMouse(){
-  var toX = game.input.mousePointer.x;
+  var toX = game.input.mousePointer.x + game.camera.x;
 
-  var toY = game.input.mousePointer.y;
+  var toY = game.input.mousePointer.y + game.camera.y;
 
   var dy = sprite.body.y - toY ;
   var dx = sprite.body.x - toX;

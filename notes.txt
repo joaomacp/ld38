@@ -10,5 +10,5 @@ Idea
 
 TODO:
 
-- Add friction
-- Body disappears when goes out of canvas and doesn't come back
+- scrollable map, camera movement
+- Add maxSpeed
