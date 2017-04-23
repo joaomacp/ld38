@@ -39,15 +39,16 @@ var arrow;
 var prevPlayerPos = {x: 0, y: 0};
 
 var planets = [
-  {center: {x: 900, y: 573}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
-  {center: {x: 1300, y: 800}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined},
-  {center: {x: 2000, y: 0}, radius: 400, name: '2-1', gravity: 10000, gravityDistance: 500, body: undefined}
+  {center: {x: 900, y: 573}, radius: 110, name: '1-1', gravity: 2600, gravityDistance: 400, body: undefined},
+  {center: {x: 1300, y: 800}, radius: 135, name: '1-2', gravity: 3000, gravityDistance: 450, body: undefined},
+  {center: {x: 2000, y: 0}, radius: 400, name: '2-1', gravity: 10000, gravityDistance: 500, body: undefined},
+  {center: {x: 2000, y: 700}, radius: 120, name: '2-2', gravity: 2800, gravityDistance: 400, body: undefined}
 ]
 
 var rocks = [
   {center: {x: 536, y: 502}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
   {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined},
-  {center: {x: 2760, y: 660}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined}
+  {center: {x: 2760, y: 700}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
