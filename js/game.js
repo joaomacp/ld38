@@ -13,8 +13,8 @@ function preload() {
   game.load.image('man', 'assets/man.png');
   game.load.image('map', 'assets/mapv1.png');
   game.load.image('man_jet', 'assets/man_withjet.png');
-  game.load.image('meter_empty', 'assets/meter.png');
-  game.load.image('meter_full', 'assets/meter_full.png');
+  game.load.image('meter_empty', 'assets/meterv1.png');
+  game.load.image('meter_full', 'assets/meter_fullv1.png');
   game.load.image('fuel_can', 'assets/fuelCanv1.png');
 
 }
@@ -33,13 +33,13 @@ var playerOnRock;
 var prevPlayerPos = {x: 0, y: 0};
 
 var planets = [
-  {center: {x: 600, y: 273}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
-  {center: {x: 1000, y: 500}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined}
+  {center: {x: 900, y: 573}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
+  {center: {x: 1300, y: 800}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined}
 ]
 
 var rocks = [
-  {center: {x: 236, y: 202}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
-  {center: {x: 1200, y: 259}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined}
+  {center: {x: 536, y: 502}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
+  {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
@@ -110,6 +110,8 @@ function create() {
     drawDebug();
   }
 
+  //game.camera.bounds = new Rectangle(100, 100, 3700, 3131);
+
 }
 
 function drawDebug(){
@@ -132,6 +134,10 @@ function drawDebug(){
 
     // graphics.arc(0, 0, 135, game.math.degToRad(0), game.math.degToRad(90), false);
     graphics.arc(planet.center.x, planet.center.y, planet.radius, 0, 2*3.14, false);
+
+    graphics.lineStyle(2, 0xff5549);
+
+    graphics.arc(planet.center.x, planet.center.y, planet.gravityDistance, 0, 2*3.14, false);
   }
 }
 
@@ -152,20 +158,12 @@ function setPlayerOnRock(nRock, posX, posY){
 
   var rockObject = rocks[nRock];
 
-  if(!rockObject.fuelUsed || rockObject.name == '1'){
-    rockObject.fuelUsed = true;
-    if(rockObject.name != '1'){
+
 
       fillUpFuel();
 
-      setTimeout(function(){rockObject.fuelCan.alpha = 0;}, 800);
-
-    }
-    else{
       fillUpFuel();
-    }
-    //meterMask.height = 100;
-  }
+
 
   playerOnRock = rockObject;
   if(posX && posY){
@@ -252,7 +250,7 @@ function render() {
     sprite.rotation = sprite.body.rotation;
   }
 
-  meterMask.height = 103-fuelLevel;
+  meterMask.height = 102-fuelLevel;
 
 
 }

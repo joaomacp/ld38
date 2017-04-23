@@ -13,7 +13,8 @@ Idea
 
 TODO:
 
-- drawPlanetsDebug
+- cam limit
+
 - build full levels
 
 - improve scaling and physics - remove collision with boundaries
@@ -24,5 +25,7 @@ TODO:
 Eventually:
 - fix rocks angle problem, and getting stuck in rocks
 - add animation for fuel reload on rocks
-- add a text with the fuelLevel number
 - check leaks
+
+END - change things up - first rock doesn't have to have fuel.
+  Animation of adding fuel can be improved - the can fades
