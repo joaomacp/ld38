@@ -45,15 +45,19 @@ var planets = [
   {center: {x: 2000, y: 700}, radius: 120, name: '2-2', gravity: 2800, gravityDistance: 400, body: undefined},
   {center: {x: 2760, y: 1000}, radius: 120, name: '3-1', gravity: 2800, gravityDistance: 400, body: undefined},
   {center: {x: 2900, y: 1350}, radius: 120, name: '3-2', gravity: 2800, gravityDistance: 400, body: undefined},
-  {center: {x: 2220, y: 1400}, radius: 510, name: '3-3', gravity: 10000, gravityDistance: 700, body: undefined},
-  {center: {x: 3200, y: 1200}, radius: 100, name: '3-4', gravity: 4000, gravityDistance: 400, body: undefined}
+  {center: {x: 2220, y: 1400}, radius: 500, name: '3-3', gravity: 10000, gravityDistance: 700, body: undefined},
+  {center: {x: 3200, y: 1200}, radius: 100, name: '3-4', gravity: 4000, gravityDistance: 400, body: undefined},
+  {center: {x: 3200, y: 2000}, radius: 100, name: '4-first', gravity: 4300, gravityDistance: 280, body: undefined},
+  {center: {x: 2800, y: 2300}, radius: 100, name: '4-second', gravity: 4300, gravityDistance: 280, body: undefined},
+  {center: {x: 2400, y: 2200}, radius: 100, name: '4-third', gravity: 6000, gravityDistance: 280, body: undefined}
 ]
 
 var rocks = [
   {center: {x: 536, y: 502}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
   {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined},
   {center: {x: 2760, y: 700}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined},
-  {center: {x: 3180, y: 1680}, radius: 22, name: '4', fuelUsed: false, body: undefined, fuelCan: undefined}
+  {center: {x: 3180, y: 1680}, radius: 22, name: '4', fuelUsed: false, body: undefined, fuelCan: undefined},
+  {center: {x: 2600, y: 2750}, radius: 22, name: '5', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
@@ -390,7 +394,7 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
     // pause the camera
 
-    //game.camera.target = null;
+    game.camera.target = rocks[nextRock-1].fuelCan;
 
     var planetName;
     if(body.planet){
@@ -622,4 +626,8 @@ function resetPlanetsAndRocks(timeout){
     addPlanetBodies();
     addRockBodies();
   }, timeout);
+}
+
+function restartFromLastCheckpoint(){
+  setPlayerOnRock(nextRock - 1);
 }
