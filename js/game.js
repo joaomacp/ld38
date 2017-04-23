@@ -23,7 +23,7 @@ var cursors;
 var meterMask;
 var fuelLevel = 100;
 var timeToSpendFuel = true;
-var fuelConsumption = 2;
+var fuelConsumption = 10;
 var isRepositioning = false;
 var playerOnRock;
 
@@ -46,16 +46,16 @@ function create() {
   game.add.image(0, 0, 'map');
 
   // New initialization code
-  setPlayerOnRock(0);
 
-/* do these when setting / launching the player
+
+  /* do these when setting / launching the player
   //	Enable p2 physics
   game.physics.startSystem(Phaser.Physics.P2JS);
 
   //  Add a sprite
   sprite = game.add.sprite(200, 200, 'man');
 
-*/
+  */
   // Forget about if the meter works for now
   fullMeter = game.add.sprite(50, 700, 'meter_full');
 
@@ -75,6 +75,8 @@ function create() {
   meterMask.drawRect(0, 0, 100, 100);
 
   emptyMeter.mask = meterMask;
+
+  setPlayerOnRock(0);
 
   //  Enable if for physics. This creates a default rectangular body.
   //game.physics.p2.enable(sprite);
@@ -101,9 +103,46 @@ function create() {
 
 }
 
-function setPlayerOnRock(nRock){
-  var rockObject = 
-  var initialPos = {x: rocks[nRock]}
+function setPlayerOnRock(nRock, posX, posY){
+
+  game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+  var rockObject = rocks[nRock];
+
+  if(!rockObject.fuelUsed || rockObject.name == '1'){
+    rockObject.fuelUsed = true;
+    fuelLevel = 100;
+    //meterMask.height = 100;
+  }
+
+  playerOnRock = rockObject;
+  if(posX && posY){
+    var initialPos = {x: posX, y: posY};
+  }
+  else{
+    var initialPos = rockObject.center;
+  }
+
+  //	Enable p2 physics
+  game.physics.startSystem(Phaser.Physics.P2JS);
+
+  if(sprite){
+    sprite.kill();
+  }
+
+  //  Add a sprite
+  sprite = game.add.sprite(initialPos.x, initialPos.y, 'man');
+
+  gravityOn = false;
+  console.log("gravity is now off");
+
+  sprite.anchor.x = 0.5;
+  sprite.anchor.y = 0.5;
+
+  game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+  game.state.update = rockModeUpdate;
+
 }
 
 function update() {
@@ -129,7 +168,7 @@ function update() {
         fuelLevel--;
 
         //fullMeter.mask = meterMask;
-        meterMask.height = 100-fuelLevel;
+        //meterMask.height = 100-fuelLevel;
         console.log('fuelLevel: ' + fuelLevel);
         timeToSpendFuel = false;
         setTimeout(function(){timeToSpendFuel = true;}, 1000/fuelConsumption);
@@ -156,9 +195,12 @@ function update() {
 }
 
 function render() {
+
   if(sprite.body){
     sprite.rotation = sprite.body.rotation;
   }
+
+  meterMask.height = 103-fuelLevel;
 
 
 }
@@ -222,15 +264,23 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
   if(bodyB.name == 'Planet' || body.name == 'Planet'){
     console.log("hit a planet");
 
+    sprite.alpha = 0;
+
     // pause the camera
 
     //game.camera.target = null;
 
-    //sprite.kill();
+    var planetName;
+    if(body.planet){
+      planetName = body.planet;
+    }
+    if(bodyB.planet){
+      planetName = bodyB.planet;
+    }
 
     //wait 1s, reposition player
     setTimeout(function(){
-      enterRockMode(200, 200, rocks[0]);
+      setPlayerOnRock(parseInt(planetName.charAt(0)) - 1);
     }, 1000);
 
   }
@@ -250,7 +300,7 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
       rockLanded = body.rock;
     }
 
-    enterRockMode(prevPlayerPos.x, prevPlayerPos.y, rockLanded);
+    setPlayerOnRock(parseInt(rockLanded.name) - 1, prevPlayerPos.x, prevPlayerPos.y);
 
     //wait 1s, reposition player
     //setTimeout(function(){
@@ -265,10 +315,10 @@ function enterRockMode(x, y, rockLanded){
 
   setTimeout(function(){canTakeOff = true;}, 220);
 
-  if(!rockLanded.fuelUsed){
+  if(!rockLanded.fuelUsed || rockLanded.name == '1'){
     rockLanded.fuelUsed = true;
     fuelLevel = 100;
-    meterMask.height = 0;
+    //meterMask.height = 100-fuelLevel;
   }
 
   gravityOn = false;
@@ -296,6 +346,8 @@ var rockModeUpdate = function(){
 
   var distanceToMouse = Phaser.Point.distance({x: game.input.mousePointer.x + game.camera.x, y: game.input.mousePointer.y + game.camera.y}, playerOnRock.center);
 
+  //meterMask.height = 100-fuelLevel;
+
   if(distanceToMouse > playerOnRock.radius + 70){
     var toX = game.input.mousePointer.x + game.camera.x;
 
@@ -315,17 +367,16 @@ var rockModeUpdate = function(){
     //console.log(theta);
   }
 
-  if(game.input.activePointer.leftButton.isDown && fuelLevel > 0 && canTakeOff){
+  if(game.input.activePointer.leftButton.isDown && fuelLevel > 0){
 
-    canTakeOff = false;
-
-    setTimeout(function() {canTakeOff = true;}, 2000);
+    console.log('exiting rockMode');
 
     if(!gravityOn){
       gravityOn = true;
       console.log("gravity is now on");
     }
 
+    /* don't kill the sprite, only add physics
     var sRotation = sprite.rotation;
 
     var sPosX = sprite.x;
@@ -333,9 +384,19 @@ var rockModeUpdate = function(){
 
     console.log('adding at ' + sPosX + ', ' + sPosY);
 
+    */
+
     sprite.kill();
 
+    var sPosX = sprite.x;
+    var sPosY = sprite.y;
+    var sRotation = sprite.rotation;
+
+    console.log('adding at ' + sPosX + ', ' + sPosY);
+
     sprite = game.add.sprite(sPosX, sPosY, 'man');
+
+    sprite.rotation = sRotation;
 
     game.physics.p2.enable(sprite);
 
@@ -345,53 +406,39 @@ var rockModeUpdate = function(){
 
     sprite.body.fixedRotation = true;
 
+    sprite.body.onBeginContact.add(collisionHandle, this);
+
+    resetPlanetsAndRocks(200);
+
+    game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+    game.state.update = update;
+
+    /* will the body get the same rotation as the sprite?
+    sprite.body.fixedRotation = false;
+
+    sprite.body.rotation = sRotation;
+
+    sprite.body.fixedRotation = true;
+
+    */
+    /* initial jump - add later maybe
     var force = 0.5;
     var forceX = force * Math.cos(sprite.body.rotation + 1.57);
     var forceY = force * Math.sin(sprite.body.rotation + 1.57);
     sprite.body.applyImpulse([forceX, forceY]);
 
     setTimeout(function(){
-      game.state.update = update;
-      if(sprite.body){
-      sprite.body.onBeginContact.add(collisionHandle, this);
-    }
-      addRockBodies();
-    }, 1500);
-
-
-
+    game.state.update = update;
+    if(sprite.body){
+    sprite.body.onBeginContact.add(collisionHandle, this);
   }
+  addRockBodies();
+}, 1500);
+*/
+
 
 }
-
-
-function resetPlayerAndCamera(){
-
-  //sprite.kill();
-
-  for(planet of planets){
-    planet.body.kill();
-  }
-
-/*
-  game.physics.startSystem(Phaser.Physics.P2JS);
-
-  //  Make things a bit more bouncey
-  game.physics.p2.defaultRestitution = 0.8;
-
-  sprite = game.add.sprite(200, 200, 'man');
-  game.physics.p2.enable(sprite);
-  sprite.body.onBeginContact.add(collisionHandle, this);
-  game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-
-
-*/
-  addPlanetBodies();
-
-  enterRockMode(200,200, rocks[0]);
-
-  console.log('reset');
-
 
 }
 
@@ -406,6 +453,7 @@ function addPlanetBodies(){
     planet.body.body.setCircle(planet.radius);
     planet.body.body.static = true;
     planet.body.body.name = 'Planet';
+    planet.body.body.planet = planet.name;
 
   }
   console.log("added");
@@ -425,4 +473,25 @@ function addRockBodies(){
 
   }
 
+}
+
+function resetPlanetsAndRocks(timeout){
+  for(planet of planets){
+    if(planet.body && planet.body.body){
+      planet.body.body.destroy();
+      planet.body.kill();
+    }
+  }
+
+  for(rock of rocks){
+    if(rock.body && rock.body.body){
+      rock.body.body.destroy();
+      rock.body.kill();
+    }
+  }
+
+  setTimeout(function(){
+    addPlanetBodies();
+    addRockBodies();
+  }, timeout);
 }
