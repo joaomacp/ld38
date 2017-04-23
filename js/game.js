@@ -12,9 +12,9 @@ var nextRock = 1;
 
 function preload() {
 
-  game.load.image('man', 'assets/man.png');
+  game.load.image('man', 'assets/manv1.png');
   game.load.image('map', 'assets/mapv1.png');
-  game.load.image('man_jet', 'assets/man_withjet.png');
+  game.load.image('man_jet', 'assets/man_withjetv1.png');
   game.load.image('meter_empty', 'assets/meterv1.png');
   game.load.image('meter_full', 'assets/meter_fullv1.png');
   game.load.image('fuel_can', 'assets/fuelCanv1.png');
@@ -42,13 +42,18 @@ var planets = [
   {center: {x: 900, y: 573}, radius: 110, name: '1-1', gravity: 2600, gravityDistance: 400, body: undefined},
   {center: {x: 1300, y: 800}, radius: 135, name: '1-2', gravity: 3000, gravityDistance: 450, body: undefined},
   {center: {x: 2000, y: 0}, radius: 400, name: '2-1', gravity: 10000, gravityDistance: 500, body: undefined},
-  {center: {x: 2000, y: 700}, radius: 120, name: '2-2', gravity: 2800, gravityDistance: 400, body: undefined}
+  {center: {x: 2000, y: 700}, radius: 120, name: '2-2', gravity: 2800, gravityDistance: 400, body: undefined},
+  {center: {x: 2760, y: 1000}, radius: 120, name: '3-1', gravity: 2800, gravityDistance: 400, body: undefined},
+  {center: {x: 2900, y: 1350}, radius: 120, name: '3-2', gravity: 2800, gravityDistance: 400, body: undefined},
+  {center: {x: 2220, y: 1400}, radius: 510, name: '3-3', gravity: 10000, gravityDistance: 700, body: undefined},
+  {center: {x: 3200, y: 1200}, radius: 100, name: '3-4', gravity: 4000, gravityDistance: 400, body: undefined}
 ]
 
 var rocks = [
   {center: {x: 536, y: 502}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
   {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined},
-  {center: {x: 2760, y: 700}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined}
+  {center: {x: 2760, y: 700}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined},
+  {center: {x: 3180, y: 1680}, radius: 22, name: '4', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
@@ -397,7 +402,7 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
     //wait 1s, reposition player
     setTimeout(function(){
-      setPlayerOnRock(parseInt(planetName.charAt(0)) - 1);
+      setPlayerOnRock(nextRock-1);
     }, 1000);
 
   }
