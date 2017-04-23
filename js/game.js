@@ -49,7 +49,14 @@ var planets = [
   {center: {x: 3200, y: 1200}, radius: 100, name: '3-4', gravity: 4000, gravityDistance: 400, body: undefined},
   {center: {x: 3200, y: 2000}, radius: 100, name: '4-first', gravity: 4300, gravityDistance: 280, body: undefined},
   {center: {x: 2800, y: 2300}, radius: 100, name: '4-second', gravity: 4300, gravityDistance: 280, body: undefined},
-  {center: {x: 2400, y: 2200}, radius: 100, name: '4-third', gravity: 6000, gravityDistance: 280, body: undefined}
+  {center: {x: 2400, y: 2200}, radius: 100, name: '4-third', gravity: 6000, gravityDistance: 280, body: undefined},
+  {center: {x: 3600, y: 2000}, radius: 100, name: '4-third', gravity: 11000, gravityDistance: 280, body: undefined},
+  {center: {x: 2250, y: 2750}, radius: 80, name: '5-third', gravity: 2100, gravityDistance: 170, body: undefined},
+  {center: {x: 2150, y: 2400}, radius: 170, name: '5-third', gravity: 11000, gravityDistance: 220, body: undefined},
+  {center: {x: 2320, y: 3000}, radius: 90, name: '5-third', gravity: 11000, gravityDistance: 200, body: undefined},
+  //{center: {x: 2010, y: 2630}, radius: 95, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined},
+  {center: {x: 1900, y: 2750}, radius: 200, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined},
+  {center: {x: 1400, y: 2780}, radius: 256, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined}
 ]
 
 var rocks = [
@@ -57,7 +64,8 @@ var rocks = [
   {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined},
   {center: {x: 2760, y: 700}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined},
   {center: {x: 3180, y: 1680}, radius: 22, name: '4', fuelUsed: false, body: undefined, fuelCan: undefined},
-  {center: {x: 2600, y: 2750}, radius: 22, name: '5', fuelUsed: false, body: undefined, fuelCan: undefined}
+  {center: {x: 2600, y: 2750}, radius: 22, name: '5', fuelUsed: false, body: undefined, fuelCan: undefined},
+  {center: {x: 1000, y: 2750}, radius: 22, name: '6', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
