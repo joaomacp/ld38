@@ -8,6 +8,8 @@ var LOG_MOUSEPOS = false;
 
 var DEBUG_DRAW = true;
 
+var nextRock = 1;
+
 function preload() {
 
   game.load.image('man', 'assets/man.png');
@@ -16,6 +18,7 @@ function preload() {
   game.load.image('meter_empty', 'assets/meterv1.png');
   game.load.image('meter_full', 'assets/meter_fullv1.png');
   game.load.image('fuel_can', 'assets/fuelCanv1.png');
+  game.load.image('arrow', 'assets/arrow.png');
 
 }
 
@@ -29,6 +32,8 @@ var timeToSpendFuel = true;
 var fuelConsumption = 16;
 var isRepositioning = false;
 var playerOnRock;
+
+var arrow;
 
 var prevPlayerPos = {x: 0, y: 0};
 
@@ -81,7 +86,11 @@ function create() {
 
   setPlayerOnRock(0);
 
+  arrow = game.add.sprite(0, 0, 'arrow');
+
   addFuelSprites();
+
+  arrow.alpha = 60;
 
   //  Enable if for physics. This creates a default rectangular body.
   //game.physics.p2.enable(sprite);
@@ -110,7 +119,7 @@ function create() {
     drawDebug();
   }
 
-  //game.camera.bounds = new Rectangle(100, 100, 3700, 3131);
+  game.camera.bounds = new Phaser.Rectangle(300, 100, 3700, 3131);
 
 }
 
@@ -158,11 +167,13 @@ function setPlayerOnRock(nRock, posX, posY){
 
   var rockObject = rocks[nRock];
 
+  var rockNext = parseInt(rockObject.name);
 
+  if(rockNext > nextRock){
+    nextRock = rockNext;
+  }
 
-      fillUpFuel();
-
-      fillUpFuel();
+  fillUpFuel();
 
 
   playerOnRock = rockObject;
@@ -246,11 +257,30 @@ function update() {
 
 function render() {
 
-  if(sprite.body){
-    sprite.rotation = sprite.body.rotation;
-  }
+  if(rocks[nextRock]){
+    // draw the arrow
+    var toX = rocks[nextRock].center.x;
 
-  meterMask.height = 102-fuelLevel;
+    var toY = rocks[nextRock].center.y;
+
+    var dy = sprite.y - toY ;
+    var dx = sprite.x - toX;
+    var theta = Math.atan2(dy, dx) - 1.57;
+    //theta  = theta * 180/3.142;
+    arrow.rotation = theta;
+
+    var radius = 50;
+    var distX = radius * Math.cos(arrow.rotation - 1.57);
+    var distY = radius * Math.sin(arrow.rotation - 1.57);
+    arrow.x = sprite.x + distX;
+    arrow.y = sprite.y + distY;
+
+    if(sprite.body){
+      sprite.rotation = sprite.body.rotation;
+    }
+
+    meterMask.height = 102-fuelLevel;
+  }
 
 
 }

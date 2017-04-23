@@ -13,12 +13,12 @@ Idea
 
 TODO:
 
-- cam limit
+- cam limits and world bounds
 
 - build full levels
 
 - improve scaling and physics - remove collision with boundaries
-- improve graphics - add icons to rocks with fuel cans
+- improve graphics
 - add sfx
 
 
@@ -26,6 +26,7 @@ Eventually:
 - fix rocks angle problem, and getting stuck in rocks
 - add animation for fuel reload on rocks
 - check leaks
+- fade arrow opacity when getting close to the next rock
 
 END - change things up - first rock doesn't have to have fuel.
   Animation of adding fuel can be improved - the can fades
