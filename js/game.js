@@ -32,6 +32,7 @@ var timeToSpendFuel = true;
 var fuelConsumption = 16;
 var isRepositioning = false;
 var playerOnRock;
+var cameraBound = true;
 
 var arrow;
 
@@ -39,12 +40,14 @@ var prevPlayerPos = {x: 0, y: 0};
 
 var planets = [
   {center: {x: 900, y: 573}, radius: 110, name: '1-1', gravity: 3000, gravityDistance: 400, body: undefined},
-  {center: {x: 1300, y: 800}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined}
+  {center: {x: 1300, y: 800}, radius: 135, name: '1-2', gravity: 3500, gravityDistance: 450, body: undefined},
+  {center: {x: 2000, y: 0}, radius: 400, name: '2-1', gravity: 10000, gravityDistance: 500, body: undefined}
 ]
 
 var rocks = [
   {center: {x: 536, y: 502}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
-  {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined}
+  {center: {x: 1500, y: 559}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined},
+  {center: {x: 2760, y: 660}, radius: 22, name: '3', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
@@ -119,7 +122,7 @@ function create() {
     drawDebug();
   }
 
-  game.camera.bounds = new Phaser.Rectangle(300, 100, 3700, 3131);
+  game.camera.bounds = new Phaser.Rectangle(350, 100, 3250, 2931);
 
 }
 
@@ -157,7 +160,17 @@ function fillUpFuel(){
   }
 }
 
-function setPlayerOnRock(nRock, posX, posY){
+function setPlayerOnRock(nRock, posX, posY, bindCamera){
+
+  if(nRock != 0){
+    game.camera.bounds = new Phaser.Rectangle(100, 100, 3500, 2931);
+    cameraBound = false;
+  }
+  else{
+    if(cameraBound){
+      game.camera.bounds = new Phaser.Rectangle(350, 100, 3250, 2931);
+    }
+  }
 
   canTakeOff = false;
 
@@ -257,6 +270,29 @@ function update() {
 
 function render() {
 
+  // limit player to map
+  if(sprite.body){
+    if(sprite.body.y < 100){
+      sprite.body.y = 101;
+      sprite.body.velocity.x = 0;
+    }
+    if(sprite.body.x < 100){
+      sprite.body.x = 101;
+      sprite.body.velocity.y = 0;
+    }
+    if(sprite.body.x > 3600){
+      sprite.body.x = 3599;
+      sprite.body.velocity.y = 0;
+    }
+    if(sprite.body.y > 3031){
+      sprite.body.y = 3030;
+      sprite.body.velocity.x = 0;
+    }
+
+  }
+
+    !game.input.activePointer.leftButton.isDown
+
   if(rocks[nextRock]){
     // draw the arrow
     var toX = rocks[nextRock].center.x;
@@ -274,13 +310,13 @@ function render() {
     var distY = radius * Math.sin(arrow.rotation - 1.57);
     arrow.x = sprite.x + distX;
     arrow.y = sprite.y + distY;
-
-    if(sprite.body){
-      sprite.rotation = sprite.body.rotation;
-    }
-
-    meterMask.height = 102-fuelLevel;
   }
+  if(sprite.body){
+    sprite.rotation = sprite.body.rotation;
+  }
+
+  meterMask.height = 102-fuelLevel;
+
 
 
 }
