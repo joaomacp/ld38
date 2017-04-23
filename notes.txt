@@ -20,6 +20,7 @@ TODO:
 - improve scaling and physics - remove collision with boundaries
 - improve graphics
 - add sfx
+- parallax
 
 
 Eventually:

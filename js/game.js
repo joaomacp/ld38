@@ -6,14 +6,14 @@ var canTakeOff = true;
 
 var LOG_MOUSEPOS = false;
 
-var DEBUG_DRAW = true;
+var DEBUG_DRAW = false;
 
 var nextRock = 1;
 
 function preload() {
 
   game.load.image('man', 'assets/manv1.png');
-  game.load.image('map', 'assets/mapv1.png');
+  game.load.image('map', 'assets/mapv2.png');
   game.load.image('man_jet', 'assets/man_withjetv1.png');
   game.load.image('meter_empty', 'assets/meterv1.png');
   game.load.image('meter_full', 'assets/meter_fullv1.png');
