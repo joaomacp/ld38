@@ -6,6 +6,8 @@ var canTakeOff = true;
 
 var LOG_MOUSEPOS = false;
 
+var DEBUG_DRAW = true;
+
 function preload() {
 
   game.load.image('man', 'assets/man.png');
@@ -104,6 +106,33 @@ function create() {
 
   //enterRockMode(200, 200, rocks[0]);
 
+  if(DEBUG_DRAW){
+    drawDebug();
+  }
+
+}
+
+function drawDebug(){
+
+  var graphics = game.add.graphics(0, 0);
+
+  for(rock of rocks){
+
+    //  Our first arc will be a line only
+    graphics.lineStyle(2, 0xffd900);
+
+    // graphics.arc(0, 0, 135, game.math.degToRad(0), game.math.degToRad(90), false);
+    graphics.arc(rock.center.x, rock.center.y, rock.radius, 0, 2*3.14, false);
+  }
+
+  for(planet of planets){
+
+    //  Our first arc will be a line only
+    graphics.lineStyle(4, 0xff00a9);
+
+    // graphics.arc(0, 0, 135, game.math.degToRad(0), game.math.degToRad(90), false);
+    graphics.arc(planet.center.x, planet.center.y, planet.radius, 0, 2*3.14, false);
+  }
 }
 
 function fillUpFuel(){
