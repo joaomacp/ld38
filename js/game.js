@@ -56,7 +56,11 @@ var planets = [
   {center: {x: 2320, y: 3000}, radius: 90, name: '5-third', gravity: 11000, gravityDistance: 200, body: undefined},
   //{center: {x: 2010, y: 2630}, radius: 95, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined},
   {center: {x: 1900, y: 2750}, radius: 200, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined},
-  {center: {x: 1400, y: 2780}, radius: 256, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined}
+  {center: {x: 1400, y: 2780}, radius: 256, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined},
+  {center: {x: 100, y: 1740}, radius: 600, name: '5-bigrock', gravity: 14000, gravityDistance:900, body: undefined},
+  {center: {x: 1010, y: 1440}, radius: 100, name: '5-bigrock', gravity: 1, gravityDistance:1, body: undefined},
+  {center: {x: 1360, y: 1480}, radius: 100, name: '5-bigrock', gravity: 9000, gravityDistance:243, body: undefined},
+  {center: {x: 700, y: 1150}, radius: 100, name: '5-bigrock', gravity: 2600, gravityDistance:243, body: undefined}
 ]
 
 var rocks = [
@@ -200,9 +204,15 @@ function setPlayerOnRock(nRock, posX, posY, bindCamera){
 
   var rockNext = parseInt(rockObject.name);
 
+  if(rockNext == 6){
+    nextRock = 0;
+  }
+  else{
+
   if(rockNext > nextRock){
     nextRock = rockNext;
   }
+}
 
   fillUpFuel();
 
@@ -400,9 +410,14 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
     sprite.alpha = 0;
 
-    // pause the camera
+    var camRock = nextRock-1;
 
+    if(camRock == -1){
+      game.camera.target = rocks[5].fuelCan;
+    }
+else{
     game.camera.target = rocks[nextRock-1].fuelCan;
+  }
 
     var planetName;
     if(body.planet){
@@ -414,7 +429,13 @@ function collisionHandle (body, bodyB, shapeA, shapeB, equation) {
 
     //wait 1s, reposition player
     setTimeout(function(){
+      var rockTo = nextRock - 1;
+      if(rockTo == -1){
+        setPlayerOnRock(5);
+      }
+      else{
       setPlayerOnRock(nextRock-1);
+    }
     }, 1000);
 
   }
@@ -637,5 +658,9 @@ function resetPlanetsAndRocks(timeout){
 }
 
 function restartFromLastCheckpoint(){
+  console.log('nextrock: ' + nextRock);
+  if(nextRock == 0){
+    setPlayerOnRock(5);
+  }
   setPlayerOnRock(nextRock - 1);
 }
