@@ -13,7 +13,9 @@ Idea
 
 TODO:
 
-- add another 'goal rock'
+- drawPlanetsDebug
+- build full levels
+
 - improve scaling and physics - remove collision with boundaries
 - improve graphics - add icons to rocks with fuel cans
 - add sfx

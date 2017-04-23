@@ -1,4 +1,4 @@
-var game = new Phaser.Game(1000, 850, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(950, 660, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update, render: render });
 
 var gravityOn = false;
 
@@ -9,10 +9,11 @@ var LOG_MOUSEPOS = false;
 function preload() {
 
   game.load.image('man', 'assets/man.png');
-  game.load.image('map', 'assets/map.png');
+  game.load.image('map', 'assets/mapv1.png');
   game.load.image('man_jet', 'assets/man_withjet.png');
   game.load.image('meter_empty', 'assets/meter.png');
   game.load.image('meter_full', 'assets/meter_full.png');
+  game.load.image('fuel_can', 'assets/fuelCanv1.png');
 
 }
 
@@ -23,7 +24,7 @@ var cursors;
 var meterMask;
 var fuelLevel = 100;
 var timeToSpendFuel = true;
-var fuelConsumption = 10;
+var fuelConsumption = 16;
 var isRepositioning = false;
 var playerOnRock;
 
@@ -35,13 +36,13 @@ var planets = [
 ]
 
 var rocks = [
-  {center: {x: 236, y: 202}, radius: 23, name: '1', fuelUsed: true, body: undefined},
-  {center: {x: 1200, y: 259}, radius: 22, name: '2', fuelUsed: false, body: undefined}
+  {center: {x: 236, y: 202}, radius: 23, name: '1', fuelUsed: true, body: undefined, fuelCan: undefined},
+  {center: {x: 1200, y: 259}, radius: 22, name: '2', fuelUsed: false, body: undefined, fuelCan: undefined}
 ]
 
 function create() {
 
-  game.world.setBounds(0, 0, 2600, 2200);
+  game.world.setBounds(0, 0, 3700, 3131);
 
   game.add.image(0, 0, 'map');
 
@@ -57,15 +58,15 @@ function create() {
 
   */
   // Forget about if the meter works for now
-  fullMeter = game.add.sprite(50, 700, 'meter_full');
+  fullMeter = game.add.sprite(25, 400, 'meter_full');
 
   fullMeter.fixedToCamera = true;
 
-  emptyMeter = game.add.sprite(50, 700, 'meter_empty');
+  emptyMeter = game.add.sprite(25, 400, 'meter_empty');
 
   emptyMeter.fixedToCamera = true;
 
-  meterMask = game.add.graphics(50, 700);
+  meterMask = game.add.graphics(25, 400);
 
   //	Shapes drawn to the Graphics object must be filled.
   meterMask.beginFill(0xffffff);
@@ -77,6 +78,8 @@ function create() {
   emptyMeter.mask = meterMask;
 
   setPlayerOnRock(0);
+
+  addFuelSprites();
 
   //  Enable if for physics. This creates a default rectangular body.
   //game.physics.p2.enable(sprite);
@@ -103,7 +106,18 @@ function create() {
 
 }
 
+function fillUpFuel(){
+  if(fuelLevel < 100){
+    fuelLevel ++;
+    setTimeout(fillUpFuel, 10);
+  }
+}
+
 function setPlayerOnRock(nRock, posX, posY){
+
+  canTakeOff = false;
+
+  setTimeout(function(){canTakeOff = true;}, 950);
 
   game.camera.follow(sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
@@ -111,7 +125,16 @@ function setPlayerOnRock(nRock, posX, posY){
 
   if(!rockObject.fuelUsed || rockObject.name == '1'){
     rockObject.fuelUsed = true;
-    fuelLevel = 100;
+    if(rockObject.name != '1'){
+
+      fillUpFuel();
+
+      setTimeout(function(){rockObject.fuelCan.alpha = 0;}, 800);
+
+    }
+    else{
+      fillUpFuel();
+    }
     //meterMask.height = 100;
   }
 
@@ -158,7 +181,7 @@ function update() {
         gravityOn = true;
         console.log("gravity is now on");
       }
-      var force = 0.5;
+      var force = 0.35;
       var forceX = force * Math.cos(sprite.body.rotation + 1.57);
       var forceY = force * Math.sin(sprite.body.rotation + 1.57);
       sprite.body.applyImpulse([forceX, forceY]);
@@ -187,7 +210,7 @@ function update() {
     }
 
 
-    limitSpeedP2JS(sprite.body, 200);
+    limitSpeedP2JS(sprite.body, 260);
 
     if(sprite.body.x !== 'undefined' && sprite.body.y !== 'undefined')
     prevPlayerPos = {x: sprite.body.x, y: sprite.body.y};
@@ -367,7 +390,7 @@ var rockModeUpdate = function(){
     //console.log(theta);
   }
 
-  if(game.input.activePointer.leftButton.isDown && fuelLevel > 0){
+  if(game.input.activePointer.leftButton.isDown && fuelLevel > 0 && canTakeOff){
 
     console.log('exiting rockMode');
 
@@ -473,6 +496,12 @@ function addRockBodies(){
 
   }
 
+}
+
+function addFuelSprites(){
+  for(rock of rocks){
+    rock.fuelCan = game.add.sprite(rock.center.x - 8, rock.center.y - 8, 'fuel_can');
+  }
 }
 
 function resetPlanetsAndRocks(timeout){
