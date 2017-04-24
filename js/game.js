@@ -130,13 +130,17 @@ function create() {
 
   setPlayerOnRock(0);
 
+
+
   //triggerText(0);
 
   arrow = game.add.sprite(0, 0, 'arrow');
 
   addFuelSprites();
 
-  arrow.alpha = 0.65;
+  arrow.alpha = 0;
+
+  setTimeout(appearArrow, 5700);
 
   //  Enable if for physics. This creates a default rectangular body.
   //game.physics.p2.enable(sprite);
@@ -737,8 +741,14 @@ function restartFromLastCheckpoint(){
 function skipCheckpoint(){
   if(!speaking){
     if (confirm("It may seem hard, but all checkpoints can be cleared. Are you sure you want to skip?") == true) {
-      
+
       setPlayerOnRock(nextRock);
     }
+  }
+}
+function appearArrow(){
+  if(arrow.alpha < 0.65){
+    arrow.alpha += 0.01;
+    setTimeout(appearArrow, 45);
   }
 }
