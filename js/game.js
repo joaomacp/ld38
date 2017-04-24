@@ -749,6 +749,6 @@ function skipCheckpoint(){
 function appearArrow(){
   if(arrow.alpha < 0.65){
     arrow.alpha += 0.01;
-    setTimeout(appearArrow, 45);
+    setTimeout(appearArrow, 41);
   }
 }
